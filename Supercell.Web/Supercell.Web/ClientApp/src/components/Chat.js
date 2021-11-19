@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ChatMessageHistory } from './ChatMessageHistory';
+import * as signalR from '@microsoft/signalr';
 
 export class Chat extends Component {
 
@@ -10,31 +11,60 @@ export class Chat extends Component {
                 { message: 'Hi Josh', user: 'S' },
                 { message: 'How are you?', user: 'S2' }
             ],
-            inputText: ''
+            inputText: '',
+            user: 'Leon',
+            hub: new signalR.HubConnectionBuilder().withUrl("/chathub").build()
         };
+
+        // this.connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        this.state.hub.on("ReceiveMessage", function (user, message) {
+            var nextMessages = this.state.messages.concat([{ message: message, user: user }]);
+
+            this.setState({ messages: nextMessages });
+        });
+
+        this.state.hub.start()
+            .then(result => {
+                console.log('Connected!');
+
+                // this.state.hub.on("ReceiveMessage", function (user, message) {
+                //     var nextMessages = this.state.messages.concat([{ message: message, user: user }]);
+
+                //     this.setState({ messages: nextMessages });
+                // });
+            })
+            .catch(e => console.log('Connection failed: ', e));
+    }
+
+    onChange = async (e) => {
+        this.setState({ inputText: e.target.value });
     }
 
     handleSubmit = async (e) => {
         e.preventDefault();
 
-        const requestOpts = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user: 'l', message: this.state.inputText })
-        };
-
-        const response = await fetch('chat', requestOpts);
-        const data = await response.json();
-
-        var nextMessages = this.state.messages.concat([{ message: data.message, user: data.user }]);
-        var nextInputText = '';
-        
-        this.setState({ messages: nextMessages, inputText: nextInputText, loading: false });
-    };
-
-    onChange = async (e) => {
-        this.setState({ inputText: e.target.value });
+        await this.state.hub.invoke("SendMessage", this.state.user, this.state.inputText);
+        this.setState({ inputText: '' });
     }
+
+    // handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     const requestOpts = {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ user: this.state.user, message: this.state.inputText })
+    //     };
+
+    //     const response = await fetch('chat', requestOpts);
+    //     const data = await response.json();
+
+    //     var nextMessages = this.state.messages.concat([{ message: data.message, user: data.user }]);
+    //     var nextInputText = '';
+
+    //     this.setState({ messages: nextMessages, inputText: nextInputText, loading: false });
+    // };
 
     render() {
         var windowStyles = {

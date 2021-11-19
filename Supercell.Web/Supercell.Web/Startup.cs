@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Supercell.Web.Controllers.SignalRChat.Hubs;
 
 namespace Supercell.Web
 {
@@ -20,6 +21,7 @@ namespace Supercell.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
 
             services.AddControllersWithViews();
 
@@ -27,6 +29,17 @@ namespace Supercell.Web
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ClientPermission", policy =>
+                {
+                    policy.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .WithOrigins("https://localhost:5001/")
+                        .AllowCredentials();
+                });
             });
         }
 
@@ -52,6 +65,8 @@ namespace Supercell.Web
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chathub");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
@@ -66,6 +81,8 @@ namespace Supercell.Web
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            //app.UseCors("ClientPermission");
         }
     }
 }
