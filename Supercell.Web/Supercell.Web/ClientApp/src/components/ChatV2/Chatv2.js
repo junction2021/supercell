@@ -51,7 +51,7 @@ const Chat = (props) => {
             <div className="row container-fluid d-flex justify-content-center">
                 <div className="col-md-12">
                     <div className="card card-bordered">
-                        <ChatWindow chat={chat} />
+                        <ChatWindow chat={chat} loggedInUser={props.user} />
                         <ChatInput sendMessage={sendMessage} />
                     </div>
                 </div>
