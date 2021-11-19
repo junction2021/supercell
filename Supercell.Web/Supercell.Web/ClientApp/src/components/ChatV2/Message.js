@@ -1,9 +1,11 @@
 import React from 'react';
 
 const Message = (props) => (
-    <div style={{ background: "#eee", borderRadius: '5px', padding: '0 10px' }}>
-        <p><strong>{props.user}</strong> says:</p>
-        <p>{props.message}</p>
+    <div className="media media-chat">
+        <div className="media-body"> <strong>{props.user}: </strong>
+            <p>{props.message}</p>
+            <p className="meta"><time dateTime="2018">23: 58</time></p>
+        </div>
     </div>
 );
 

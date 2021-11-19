@@ -47,10 +47,15 @@ const Chat = (props) => {
     }
 
     return (
-        <div>
-            <ChatInput sendMessage={sendMessage} />
-            <hr />
-            <ChatWindow chat={chat} />
+        <div className="page-content page-container" id="page-content">
+            <div className="row container-fluid d-flex justify-content-center">
+                <div className="col-md-12">
+                    <div className="card card-bordered">
+                        <ChatWindow chat={chat} />
+                        <ChatInput sendMessage={sendMessage} />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

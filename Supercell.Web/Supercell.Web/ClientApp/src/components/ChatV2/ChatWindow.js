@@ -10,7 +10,7 @@ const ChatWindow = (props) => {
             message={m.message}/>);
 
     return(
-        <div>
+        <div className="ps-container ps-theme-default ps-active-y" style={{overflowY: 'scroll !important', height: '400px !important'}}>
             {chat}
         </div>
     )

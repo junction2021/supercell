@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 const ChatInput = (props) => {
     const [message, setMessage] = useState('');
@@ -11,7 +13,7 @@ const ChatInput = (props) => {
         if (isMessageProvided) {
             props.sendMessage(message);
             setMessage('');
-        } 
+        }
         else {
             alert('Please insert a message.');
         }
@@ -23,16 +25,18 @@ const ChatInput = (props) => {
 
     return (
         <form 
+            className="publisher bt-1 border-light"
             onSubmit={onSubmit}>
-            <label htmlFor="message">Message:</label>
-            <input 
-                type="text"
-                id="message"
-                name="message" 
+            <input
+                className="publisher-input"
+                type="search"
+                id="xyz123"
+                name="xyz123"
+                autoComplete="off"
+                placeholder="Say hello!"
                 value={message}
                 onChange={onMessageUpdate} />
-            <br/><br/>
-            <button>Submit</button>
+            <button className="publisher-btn text-info"><FontAwesomeIcon icon={faPaperPlane} /></button>
         </form>
     )
 };
