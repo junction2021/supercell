@@ -4,7 +4,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 
-const Chat = () => {
+const Chat = (props) => {
     const [connection, setConnection] = useState(null);
     const [chat, setChat] = useState([]);
     const latestChat = useRef(null);
@@ -37,9 +37,9 @@ const Chat = () => {
         }
     }, [connection]);
 
-    const sendMessage = async (user, message) => {
+    const sendMessage = async (message) => {
         try {
-            await connection.invoke("SendMessage", user, message);
+            await connection.invoke("SendMessage", props.user, message);
         }
         catch (e) {
             console.log(e);

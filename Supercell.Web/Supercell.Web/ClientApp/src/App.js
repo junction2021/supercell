@@ -1,19 +1,42 @@
-import React, { Component } from 'react';
-import { Route } from 'react-router';
+import React, { Component, useEffect, useState } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import Chat from './components/ChatV2/Chatv2';
+import Login from './components/Login/Login';
 
 import './custom.css'
 
-export default class App extends Component {
-  static displayName = App.name;
+function App() {
+  const [user, setUser] = useState();
 
-  render () {
-    return (
-      <Layout>
-        <Route exact path='/' component={Chat} />
-        <Route path='/chat' component={Chat} />
-      </Layout>
-    );
+  if (!user) {
+    return <Login setUser={setUser} />
   }
+
+  return (
+    <Layout>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/">
+            <Chat user={user} />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </Layout>
+  );
 }
+
+export default App;
+
+// export default class App extends Component {
+//   static displayName = App.name;
+
+//   render() {
+//     return (
+//       <Layout>
+//         <Route exact path='/' component={Chat} />
+//         <Route path='/chat' component={Chat} />
+//       </Layout>
+//     );
+//   }
+// }

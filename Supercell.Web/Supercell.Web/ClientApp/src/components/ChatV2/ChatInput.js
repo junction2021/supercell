@@ -1,25 +1,20 @@
 import React, { useState } from 'react';
 
 const ChatInput = (props) => {
-    const [user, setUser] = useState('');
     const [message, setMessage] = useState('');
 
     const onSubmit = (e) => {
         e.preventDefault();
 
-        const isUserProvided = user && user !== '';
         const isMessageProvided = message && message !== '';
 
-        if (isUserProvided && isMessageProvided) {
-            props.sendMessage(user, message);
+        if (isMessageProvided) {
+            props.sendMessage(message);
+            setMessage('');
         } 
         else {
-            alert('Please insert an user and a message.');
+            alert('Please insert a message.');
         }
-    }
-
-    const onUserUpdate = (e) => {
-        setUser(e.target.value);
     }
 
     const onMessageUpdate = (e) => {
@@ -29,16 +24,7 @@ const ChatInput = (props) => {
     return (
         <form 
             onSubmit={onSubmit}>
-            <label htmlFor="user">User:</label>
-            <br />
-            <input 
-                id="user" 
-                name="user" 
-                value={user}
-                onChange={onUserUpdate} />
-            <br/>
             <label htmlFor="message">Message:</label>
-            <br />
             <input 
                 type="text"
                 id="message"
