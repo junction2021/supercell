@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31729.503
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supercell.Web", "Supercell.Web\Supercell.Web.csproj", "{85D510F5-0E44-447C-92F6-7D504F83D62E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Supercell.Web", "Supercell.Web\Supercell.Web.csproj", "{85D510F5-0E44-447C-92F6-7D504F83D62E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

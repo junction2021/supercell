@@ -7,21 +7,32 @@ export class Chat extends Component {
         super(props);
         this.state = {
             messages: [
-                { message: 'Hi Josh', timestamp: 'Tuesday' },
-                { message: 'How are you?', timestamp: 'Wednesday' }
+                { message: 'Hi Josh', user: 'S' },
+                { message: 'How are you?', user: 'S2' }
             ],
             inputText: ''
         };
     }
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
         e.preventDefault();
-        var nextMessages = this.state.messages.concat([{ message: this.state.inputText, timestamp: 'Thursday' }]);
+
+        const requestOpts = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: 'l', message: this.state.inputText })
+        };
+
+        const response = await fetch('chat', requestOpts);
+        const data = await response.json();
+
+        var nextMessages = this.state.messages.concat([{ message: data.message, user: data.user }]);
         var nextInputText = '';
-        this.setState({ messages: nextMessages, inputText: nextInputText });
+        
+        this.setState({ messages: nextMessages, inputText: nextInputText, loading: false });
     };
 
-    onChange = (e) => {
+    onChange = async (e) => {
         this.setState({ inputText: e.target.value });
     }
 

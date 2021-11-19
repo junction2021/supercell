@@ -10,7 +10,7 @@ export class ChatMessageHistory extends Component {
                 borderBottom: '1px solid #ddd'
             };
 
-            return <li style={liStyles}><ChatMessage message={message.message} timestamp={message.timestamp} /></li>
+            return <li style={liStyles}><ChatMessage message={message.message} user={message.user} /></li>
         };
 
         var ulStyles = {
