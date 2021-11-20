@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.scoped.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const Login = ({ setUser }) => {
     const [userName, setUserName] = useState();
@@ -32,7 +33,7 @@ const Login = ({ setUser }) => {
 
         const rndNr = Math.floor(Math.random() * (colors.length - 1));
         const userColors = colors[rndNr];
-        setUser({ name: userName, colors: userColors, karma: -50 });
+        setUser({ name: userName, colors: userColors, karma: 100, userId: uuidv4() });
     };
 
     return (

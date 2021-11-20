@@ -22,12 +22,4 @@ namespace Supercell.Web.Controllers
             return ChatHub.ConnectedIds.Count;
         }
     }
-
-    public class ChatMessage
-    {
-        public string Message { get; set; }
-        public string User { get; set; }
-        public ColorSchema Color { get; set; }
-    }
-
 }

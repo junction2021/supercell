@@ -12,12 +12,14 @@ const ConfirmBadMessage = ({ betterMessage, confirm, dismiss }) => {
     };
 
     useEffect(() => {
-        const timer = setInterval(secondPassed, 100);
-        return () => clearInterval(timer);
-    });
+        const timer = setTimeout(secondPassed, 100);
+        return () => {
+            clearTimeout(timer);
+        };
+    },[countDown]);
 
     return (
-        <Alert style={{cursor:'pointer'}} color={'warning'} className="ml-4 mr-4" onClick={confirm}>
+        <Alert style={{ cursor: 'pointer' }} color={'warning'} className="ml-4 mr-4" onClick={confirm}>
             <h4 className="alert-heading">Don't lose your Karma!</h4>
             <hr />
             <p>Stop being so toxic, here write this instead:</p>

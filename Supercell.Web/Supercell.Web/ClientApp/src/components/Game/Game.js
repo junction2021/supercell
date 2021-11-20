@@ -62,14 +62,15 @@ const Game = (props) => {
                 <div className="col-md-12 pt-3">
                     <div className="jumbotron jumbotron-fluid text-center">
                         <h1 className="text-center">Game in progress...</h1>
-                        <h4>Your current Karma: <span style={{ color: props.user.karma > 0 ? "Green" : "Red" }}>{props.user.karma}</span></h4>
+                        <h4>Your current Karma: <span 
+                            className={props.user.karma >= 60 ? 'text-success' : props.user.karma <= 30 ? 'text-danger' : 'text-secondary' }
+                            >{props.user.karma}</span></h4>
                         {/* <Countdown
                             date={timer}
                             key={currentTimeIndex}
                             onComplete={onComplete}
                             renderer={renderer} />
                         <Button className="mt-3" color="primary" onClick={restart}>Restart</Button> */}
-                        {/* <Button className="mt-3" color="primary" click={endGame}>End game faster</Button> */}
                         <OnlineCounter connection={connection} />
                     </div>
                 </div>

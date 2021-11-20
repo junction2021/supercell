@@ -8,11 +8,6 @@ namespace Supercell.Web.Controllers
 
     namespace SignalRChat.Hubs
     {
-        public class ColorSchema
-        {
-            public string BackgroundColor { get; set; }
-            public string Color { get; set; }
-        }
         public class ChatHub : Hub
         {
             public static HashSet<string> ConnectedIds = new HashSet<string>();

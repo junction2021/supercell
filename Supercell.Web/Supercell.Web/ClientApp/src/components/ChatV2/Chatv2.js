@@ -7,7 +7,7 @@ const Chat = ({ connection, loggedUser }) => {
     const [chat, setChat] = useState([]);
     const latestChat = useRef(null);
     latestChat.current = chat;
-    
+
     const [badMessages, setBadMessages] = useState([]);
     const latestBadMessages = useRef(null);
     latestBadMessages.current = badMessages;
@@ -29,10 +29,10 @@ const Chat = ({ connection, loggedUser }) => {
 
             setChat(updatedChat);
         });
-        
+
         connection.on('ReceiveCorrection', (betterMessage, originalMessage) => {
             const updatedMsgs = [...latestBadMessages.current];
-            updatedMsgs.push({betterMessage, originalMessage});
+            updatedMsgs.push({ betterMessage, originalMessage });
 
             setBadMessages(updatedMsgs);
         });
@@ -53,10 +53,10 @@ const Chat = ({ connection, loggedUser }) => {
 
     return (
         <div className="card card-bordered">
-            <ChatWindow 
-                chat={chat} 
-                badMessages={badMessages} 
-                updateBadMessages={setBadMessages} 
+            <ChatWindow
+                chat={chat}
+                badMessages={badMessages}
+                updateBadMessages={setBadMessages}
                 loggedInUser={loggedUser.name}
                 forceSendMessage={forceSendMessage}
                 sendMessage={sendMessage} />
