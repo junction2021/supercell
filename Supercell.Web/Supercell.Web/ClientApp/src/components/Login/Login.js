@@ -16,6 +16,15 @@ const Login = ({ setUser }) => {
         {backgroundColor: '#0f4d19', color: '#6fc27c'},
         {backgroundColor: '#efc8b1', color: '#8a6626'},
         {backgroundColor: '#008970', color: '#99eedf'},
+        {backgroundColor: '#bdfff6', color: '#e23c52'},
+        {backgroundColor: '#390879', color: '#b8df10'},
+        {backgroundColor: '#551fbd', color: '#a2eacb'},
+        {backgroundColor: '#efc8b1', color: '#514644'},
+        {backgroundColor: '#337def', color: '#fcc729'},
+        {backgroundColor: '#a9dce3', color: '#7689de'},
+        {backgroundColor: '#0e387a', color: '#9fafca'},
+        {backgroundColor: '#ffe042', color: '#e71989'},
+        {backgroundColor: '#f4b41a', color: '#143d59'},
     ];
 
     const handleSubmit = async e => {
