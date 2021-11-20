@@ -18,20 +18,7 @@ const ChatWindow = (props) => {
             key={Date.now() * Math.random()}
             betterMessage={dm.betterMessage}
             originalMessage={dm.originalMessage}
-            dismiss={() => correctionDismissed(dm.originalMessage)}
-            confirm={() => correctionConfirmed(dm.betterMessage)} />);
-
-    const correctionDismissed = (message) => {
-        props.forceSendMessage(message);
-
-        props.updateBadMessages(props.badMessages.filter(i => i.originalMessage !== message));
-    };
-
-    const correctionConfirmed = (message) => {
-        props.sendMessage(message);
-
-        props.updateBadMessages(props.badMessages.filter(i => i.betterMessage !== message));
-    };
+            isConfirm={decision => props.isConfirm(dm, decision)} />);
 
     const messagesEndRef = useRef(null);
 
