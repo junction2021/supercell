@@ -8,12 +8,18 @@ namespace Supercell.Web.Controllers
     [Route("[controller]")]
     public class ChatController: ControllerBase
     {
-        public static List<ChatMessage> _history = new List<ChatMessage>();
+        public static List<ChatMessage> History = new List<ChatMessage>();
 
         [HttpGet("GetHistory")]
         public IEnumerable<ChatMessage> GetHistory()
         {
-            return _history;
+            return History;
+        }
+
+        [HttpGet("GetCurrentUsers")]
+        public int CurrentUsers()
+        {
+            return ChatHub.ConnectedIds.Count;
         }
     }
 

@@ -32,7 +32,7 @@ const Login = ({ setUser }) => {
 
         const rndNr = Math.floor(Math.random() * (colors.length - 1));
         const userColors = colors[rndNr];
-        setUser({ name: userName, colors: userColors });
+        setUser({ name: userName, colors: userColors, karma: -50 });
     };
 
     return (
@@ -48,7 +48,7 @@ const Login = ({ setUser }) => {
                         id="inputName"
                         className="form-control mb-3"
                         placeholder="Enter your name"
-                        required=""
+                        required
                         autoFocus=""
                         maxLength={32}
                         onChange={e => setUserName(e.target.value)} />

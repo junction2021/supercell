@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import Chat from './components/ChatV2/Chatv2';
+import Game from './components/Game/Game';
 import Login from './components/Login/Login';
 
 import './custom.css'
@@ -18,7 +18,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/">
-            <Chat user={user} />
+            <Game user={user} />
           </Route>
         </Switch>
       </BrowserRouter>

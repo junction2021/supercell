@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { HubConnectionBuilder } from '@microsoft/signalr';
 
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 
-const Chat = (props) => {
-    const [connection, setConnection] = useState(null);
+const Chat = ({ connection, loggedUser }) => {
     const [chat, setChat] = useState([]);
     const latestChat = useRef(null);
-
     latestChat.current = chat;
+    
+    const [badMessages, setBadMessages] = useState([]);
+    const latestBadMessages = useRef(null);
+    latestBadMessages.current = badMessages;
 
     useEffect(() => {
         const fetchChat = async () => {
@@ -22,55 +23,44 @@ const Chat = (props) => {
     }, []);
 
     useEffect(() => {
-        const newConnection = new HubConnectionBuilder()
-            .withUrl('/chathub')
-            .withAutomaticReconnect()
-            .build();
+        connection.on('ReceiveMessage', (user, color, message) => {
+            const updatedChat = [...latestChat.current];
+            updatedChat.push({ user, color, message });
 
-        setConnection(newConnection);
-    }, []);
+            setChat(updatedChat);
+        });
+        
+        connection.on('ReceiveCorrection', (betterMessage, originalMessage) => {
+            const updatedMsgs = [...latestBadMessages.current];
+            updatedMsgs.push({betterMessage, originalMessage});
 
-    useEffect(() => {
-        if (connection) {
-            connection.start()
-                .then(result => {
-                    console.log('Connected!');
-
-                    connection.on('ReceiveMessage', (user, color, message) => {
-                        const updatedChat = [...latestChat.current];
-                        updatedChat.push({ user, color, message });
-
-                        setChat(updatedChat);
-                    });
-                })
-                .catch(e => console.log('Connection failed: ', e));
-        }
+            setBadMessages(updatedMsgs);
+        });
     }, [connection]);
 
     const sendMessage = async (message) => {
         try {
-            await connection.invoke("SendMessage", props.user.name, props.user.colors, message);
+            await connection.invoke("SendMessage", loggedUser.name, loggedUser.colors, message);
         }
         catch (e) {
             console.log(e);
         }
     }
 
+    const forceSendMessage = async (message) => {
+        await connection.invoke("ForceSendMessage", loggedUser.name, loggedUser.colors, message);
+    };
+
     return (
-        <div className="page-content page-container" id="page-content">
-            <div className="row container-fluid d-flex justify-content-center">
-                <div className="col-md-12 pt-3">
-                    <div className="jumbotron jumbotron-fluid">
-                        <h1 className="text-center">Game in progress...</h1>
-                    </div>
-                </div>
-                <div className="col-md-12 fixed-bottom">
-                    <div className="card card-bordered">
-                        <ChatWindow chat={chat} loggedInUser={props.user.name} />
-                        <ChatInput sendMessage={sendMessage} />
-                    </div>
-                </div>
-            </div>
+        <div className="card card-bordered">
+            <ChatWindow 
+                chat={chat} 
+                badMessages={badMessages} 
+                updateBadMessages={setBadMessages} 
+                loggedInUser={loggedUser.name}
+                forceSendMessage={forceSendMessage}
+                sendMessage={sendMessage} />
+            <ChatInput sendMessage={sendMessage} />
         </div>
     );
 };
