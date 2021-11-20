@@ -9,10 +9,10 @@ import lombok.ToString;
 @Setter
 public class SimpleMessage {
     private String newMessage;
-    private double karma;
+    private int karma;
 
     public SimpleMessage(Message m) {
         this.newMessage = m.getNew_message();
-        this.karma = Math.round(m.getScore() * 100);
+        this.karma = (int) Math.round(m.getScore() * 100);
     }
 }

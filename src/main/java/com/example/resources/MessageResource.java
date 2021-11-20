@@ -26,12 +26,13 @@ public class MessageResource {
     @Inject
     MessageRepository messageRepository;
 
-    @Path("/message")
+    @Path("message")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheResult(cacheName = "process")
+//    @Blocking
     public Uni<Response> process(@Valid Message message) {
         Message parsedText = new Message();
         try {
@@ -50,10 +51,14 @@ public class MessageResource {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        message.setNew_message(parsedText.getNew_message());
+        if (!parsedText.getNew_message().equals(message.getText())) {
+            message.setNew_message(parsedText.getNew_message());
+        } else {
+            message.setNew_message("");
+        }
         message.setLabel(parsedText.getLabel());
         message.setMessage_index(parsedText.getMessage_index());
-        message.setScore(message.getMessage_index() + (double) (1 / (1 + 10 * (System.currentTimeMillis() - message.getDate().getTime()))));
+        message.setScore(message.getMessage_index() + (1 / (1 + 0.5 * (System.currentTimeMillis() - message.getDate().getTime()))));
         if (messageRepository.find("username", message.getUsername()).count() > 0) {
             message.setText(messageRepository.find("username", message.getUsername()).firstResult().getText() + ", " + message.getText());
             messageRepository.find("username", message.getUsername()).firstResult().setNew_message(message.getNew_message());
@@ -77,9 +82,10 @@ public class MessageResource {
     }
 
     @GET
-    @Path("/get")
+    @Path("get")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "getSingle")
+//    @Blocking
     public Uni<Response> get(@QueryParam("id") long id) {
         return Uni.createFrom().item(() -> messageRepository.findById(id))
                 .onItem().castTo(Message.class)
@@ -96,9 +102,10 @@ public class MessageResource {
     }
 
     @GET
-    @Path("/get/all")
+    @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "getAll")
+//    @Blocking
     public Uni<Response> getAll() {
         return Uni.createFrom().item(messageRepository.listAll())
                 .onItem()

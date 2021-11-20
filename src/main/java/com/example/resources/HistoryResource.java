@@ -15,20 +15,22 @@ import javax.ws.rs.core.Response;
 @ApplicationScoped
 public class HistoryResource {
     @POST
-    @Path("/history")
+    @Path("history")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheResult(cacheName = "historyPost")
+//    @Blocking
     public Uni<Response> history(@Valid History history) {
         history.persist();
         return Uni.createFrom().item(Response.ok(history).build());
     }
 
     @GET
-    @Path("/history")
+    @Path("history")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "historyGet")
+//    @Blocking
     public Uni<Response> historyGet() {
         return Uni.createFrom().item(Response.ok(History.listAll()).build());
     }

@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.List;
 @Setter
 @ToString
 @Cacheable
+@Transactional
 public class Message {
     @Column(name = "message_id", nullable = false, updatable = false)
     @Id
@@ -30,11 +32,11 @@ public class Message {
 
     @NotBlank(message = "Username can't be empty")
     @Basic(fetch = FetchType.EAGER)
-    @Column(name = "username", updatable = false, length = 100)
+    @Column(name = "username", updatable = false, length = 1000)
     private String username;
 
     @NotEmpty(message = "Text can't be empty")
-    @Column(name = "text")
+    @Column(name = "text", length = 1000)
 //    @Convert(converter = StringListConverter.class)
     private String text;
 
@@ -42,10 +44,10 @@ public class Message {
     @Column(name = "date")
     private Date date = new Date();
 
-    @Column(name = "new_message")
+    @Column(name = "new_message", length = 1000)
     private String new_message;
 
-    @Column(name = "label")
+    @Column(name = "label", length = 1000)
     private String label;
 
     @Column(name = "message_index")
