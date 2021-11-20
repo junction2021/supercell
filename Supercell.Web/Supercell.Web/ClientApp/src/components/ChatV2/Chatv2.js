@@ -12,6 +12,16 @@ const Chat = (props) => {
     latestChat.current = chat;
 
     useEffect(() => {
+        const fetchChat = async () => {
+            const response = await fetch('chat/GetHistory');
+            const data = await response.json();
+            setChat(data);
+        };
+
+        fetchChat();
+    }, []);
+
+    useEffect(() => {
         const newConnection = new HubConnectionBuilder()
             .withUrl('/chathub')
             .withAutomaticReconnect()
@@ -49,7 +59,12 @@ const Chat = (props) => {
     return (
         <div className="page-content page-container" id="page-content">
             <div className="row container-fluid d-flex justify-content-center">
-                <div className="col-md-12">
+                <div className="col-md-12 pt-3">
+                    <div className="jumbotron jumbotron-fluid">
+                        <h1 className="text-center">Game in progress...</h1>
+                    </div>
+                </div>
+                <div className="col-md-12 fixed-bottom">
                     <div className="card card-bordered">
                         <ChatWindow chat={chat} loggedInUser={props.user.name} />
                         <ChatInput sendMessage={sendMessage} />

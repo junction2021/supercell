@@ -27,16 +27,3 @@ function App() {
 }
 
 export default App;
-
-// export default class App extends Component {
-//   static displayName = App.name;
-
-//   render() {
-//     return (
-//       <Layout>
-//         <Route exact path='/' component={Chat} />
-//         <Route path='/chat' component={Chat} />
-//       </Layout>
-//     );
-//   }
-// }

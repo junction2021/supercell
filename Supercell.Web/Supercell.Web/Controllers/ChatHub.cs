@@ -16,6 +16,8 @@ namespace Supercell.Web.Controllers
             public async Task SendMessage(string user, ColorSchema color, string message)
             {
                 await Clients.All.SendAsync("ReceiveMessage", user, color, message);
+
+                ChatController._history.Add(new ChatMessage { User = user, Color = color, Message = message });
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Supercell.Web.Controllers.SignalRChat.Hubs;
+using System.Collections.Generic;
 
 namespace Supercell.Web.Controllers
 {
@@ -6,16 +8,20 @@ namespace Supercell.Web.Controllers
     [Route("[controller]")]
     public class ChatController: ControllerBase
     {
-        [HttpPost]
-        public ChatMessage Post(ChatMessage chatMessage)
+        public static List<ChatMessage> _history = new List<ChatMessage>();
+
+        [HttpGet("GetHistory")]
+        public IEnumerable<ChatMessage> GetHistory()
         {
-            return chatMessage;
+            return _history;
         }
     }
+
     public class ChatMessage
     {
         public string Message { get; set; }
         public string User { get; set; }
+        public ColorSchema Color { get; set; }
     }
 
 }
