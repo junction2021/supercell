@@ -53,15 +53,15 @@ namespace Supercell.Web.Controllers
                 var dr = await response.Content.ReadAsStringAsync();
                 var a = JsonConvert.DeserializeObject<MessageResponse>(dr);
 
-                if (a.Karma < 40)
+                if (a.Karma < 40 && !string.IsNullOrEmpty(a.CorrectedMessage))
+                {
+                    await Clients.Caller.SendAsync("ReceiveCorrection", a.CorrectedMessage, message, a.Karma);
+                }
+                else
                 {
                     await Clients.All.SendAsync("ReceiveMessage", user, color, message, a.Karma);
 
                     await SaveMessage(user, color, backgroundColor, message);
-                }
-                else
-                {
-                    await Clients.Caller.SendAsync("ReceiveCorrection", a.CorrectedMessage, message, a.Karma);
                 }
             }
 

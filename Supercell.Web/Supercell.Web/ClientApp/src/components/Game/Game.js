@@ -7,6 +7,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import OnlineCounter from './OnlineCounter';
 
 const Game = (props) => {
+    const [karma, setKarma] = useState(100);
     const [connected, setConnected] = useState(false);
 
     const [completed, setCompleted] = useState(false);
@@ -46,6 +47,12 @@ const Game = (props) => {
             connection.start()
                 .then(result => {
                     setConnected(true);
+
+                    connection.on('ReceiveMessage', (user, color, message, karma) => {
+                        if (user === props.user.name) {
+                            setKarma(karma);                            
+                        }
+                    });
                 })
                 .catch(e => console.log('Connection failed: ', e));
         }
@@ -63,8 +70,8 @@ const Game = (props) => {
                     <div className="jumbotron jumbotron-fluid text-center">
                         <h1 className="text-center">Game in progress...</h1>
                         <h4>Your current Karma: <span 
-                            className={props.user.karma >= 60 ? 'text-success' : props.user.karma <= 30 ? 'text-danger' : 'text-secondary' }
-                            >{props.user.karma}</span></h4>
+                            className={karma >= 60 ? 'text-success' : karma <= 30 ? 'text-danger' : 'text-secondary' }
+                            >{karma}</span></h4>
                         {/* <Countdown
                             date={timer}
                             key={currentTimeIndex}

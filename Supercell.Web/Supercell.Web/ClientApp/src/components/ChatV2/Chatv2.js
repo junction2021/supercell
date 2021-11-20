@@ -10,6 +10,8 @@ const Chat = ({ connection, loggedUser }) => {
     const latestChat = useRef(null);
     latestChat.current = chat;
 
+    const [badMessage, setBadMessage] = useState(null);
+
     const [badMessages, setBadMessages] = useState([]);
     const latestBadMessages = useRef(null);
     latestBadMessages.current = badMessages;
@@ -34,11 +36,13 @@ const Chat = ({ connection, loggedUser }) => {
         });
 
         connection.on('ReceiveCorrection', (betterMessage, originalMessage) => {
-            const updatedMsgs = [...latestBadMessages.current];
-            updatedMsgs.push({ betterMessage, originalMessage, id: uuidv4() });
+            // const updatedMsgs = [...latestBadMessages.current];
+            // updatedMsgs.push({ betterMessage, originalMessage, id: uuidv4() });
 
-            setBadMessages(updatedMsgs);
-            console.log('ReceiveCorrection');
+            // setBadMessages(updatedMsgs);
+            // console.log('ReceiveCorrection');
+
+            setBadMessage({ betterMessage, originalMessage, id: uuidv4() });
         });
     }, [connection]);
 

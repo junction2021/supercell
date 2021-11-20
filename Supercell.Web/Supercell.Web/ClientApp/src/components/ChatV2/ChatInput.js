@@ -29,11 +29,12 @@ const ChatInput = (props) => {
             onSubmit={onSubmit}>
             <input
                 className="publisher-input"
-                type="search"
+                type="text"
                 id="xyz123"
                 name="xyz123"
                 autoComplete="off"
                 placeholder="Say hello!"
+                maxLength="250"
                 value={message}
                 onChange={onMessageUpdate} />
             <button className="publisher-btn text-info"><FontAwesomeIcon icon={faPaperPlane} /></button>

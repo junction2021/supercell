@@ -13,12 +13,12 @@ const ChatWindow = (props) => {
             user={m.user}
             message={m.message} />);
 
-    const badMessages = props.badMessages
-        .map(dm => <ConfirmBadMessage 
-            key={Date.now() * Math.random()}
-            betterMessage={dm.betterMessage}
-            originalMessage={dm.originalMessage}
-            isConfirm={decision => props.isConfirm(dm, decision)} />);
+    // const badMessages = props.badMessages
+    //     .map(dm => <ConfirmBadMessage 
+    //         key={Date.now() * Math.random()}
+    //         betterMessage={dm.betterMessage}
+    //         originalMessage={dm.originalMessage}
+    //         isConfirm={decision => props.isConfirm(dm, decision)} />);
 
     const messagesEndRef = useRef(null);
 
@@ -31,7 +31,15 @@ const ChatWindow = (props) => {
     return (
         <div className="ps-container ps-theme-default ps-active-y chat-frame">
             {chat}
-            {badMessages}
+            {props.badMessage
+                ? <ConfirmBadMessage
+                    key={Date.now() * Math.random()}
+                    betterMessage={props.badMessage.betterMessage}
+                    originalMessage={props.badMessage.originalMessage}
+                    isConfirm={decision => props.isConfirm(props.badMessage, decision)} />
+                : <></>
+            }
+            {/* {badMessages} */}
             <div ref={messagesEndRef} />
         </div>
     )
