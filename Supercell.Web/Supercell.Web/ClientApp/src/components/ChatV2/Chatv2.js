@@ -26,9 +26,9 @@ const Chat = (props) => {
                 .then(result => {
                     console.log('Connected!');
 
-                    connection.on('ReceiveMessage', (user, message) => {
+                    connection.on('ReceiveMessage', (user, color, message) => {
                         const updatedChat = [...latestChat.current];
-                        updatedChat.push({ user, message });
+                        updatedChat.push({ user, color, message });
 
                         setChat(updatedChat);
                     });
@@ -39,7 +39,7 @@ const Chat = (props) => {
 
     const sendMessage = async (message) => {
         try {
-            await connection.invoke("SendMessage", props.user, message);
+            await connection.invoke("SendMessage", props.user.name, props.user.colors, message);
         }
         catch (e) {
             console.log(e);
@@ -51,7 +51,7 @@ const Chat = (props) => {
             <div className="row container-fluid d-flex justify-content-center">
                 <div className="col-md-12">
                     <div className="card card-bordered">
-                        <ChatWindow chat={chat} loggedInUser={props.user} />
+                        <ChatWindow chat={chat} loggedInUser={props.user.name} />
                         <ChatInput sendMessage={sendMessage} />
                     </div>
                 </div>

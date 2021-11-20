@@ -7,6 +7,7 @@ const ChatWindow = (props) => {
         .map(m => <Message 
             key={Date.now() * Math.random()}
             loggedInUser={props.loggedInUser}
+            userColors={m.color}
             user={m.user}
             message={m.message}/>);
 

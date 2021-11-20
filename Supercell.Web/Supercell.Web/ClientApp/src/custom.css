@@ -132,7 +132,8 @@ h4.card-title {
   border-radius: 100%;
   background-color: #f5f6f7;
   color: #8b95a5;
-  text-transform: uppercase
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .media-chat .media-body {
@@ -205,14 +206,6 @@ h4.card-title {
   margin-left: 16px
 }
 
-.media-chat.media-chat-reverse {
-  padding-right: 12px;
-  padding-left: 64px;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: reverse;
-  flex-direction: row-reverse
-}
-
 .media-chat {
   padding-right: 64px;
   margin-bottom: 0
@@ -225,8 +218,6 @@ h4.card-title {
 }
 
 .media-chat.media-chat-reverse .media-body p {
-  float: right;
-  clear: right;
   background-color: #48b0f7;
   color: #fff
 }

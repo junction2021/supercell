@@ -6,11 +6,16 @@ namespace Supercell.Web.Controllers
 
     namespace SignalRChat.Hubs
     {
+        public class ColorSchema
+        {
+            public string BackgroundColor { get; set; }
+            public string Color { get; set; }
+        }
         public class ChatHub : Hub
         {
-            public async Task SendMessage(string user, string message)
+            public async Task SendMessage(string user, ColorSchema color, string message)
             {
-                await Clients.All.SendAsync("ReceiveMessage", user, message);
+                await Clients.All.SendAsync("ReceiveMessage", user, color, message);
             }
         }
     }
