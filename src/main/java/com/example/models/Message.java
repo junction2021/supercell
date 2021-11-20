@@ -1,7 +1,5 @@
 package com.example.models;
 
-import com.example.services.StringListConverter;
-import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,7 +17,7 @@ import java.util.List;
 @Setter
 @ToString
 @Cacheable
-public class Message extends PanacheEntityBase {
+public class Message {
     @Column(name = "message_id", nullable = false, updatable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,12 +30,13 @@ public class Message extends PanacheEntityBase {
 
     @NotBlank(message = "Username can't be empty")
     @Basic(fetch = FetchType.EAGER)
-    @Column(name = "username", unique = false, updatable = false, length = 100)
+    @Column(name = "username", updatable = false, length = 100)
     private String username;
 
     @NotEmpty(message = "Text can't be empty")
-    @Convert(converter = StringListConverter.class)
-    public List<String> text;
+    @Column(name = "text")
+//    @Convert(converter = StringListConverter.class)
+    private String text;
 
     @Basic(fetch = FetchType.EAGER)
     @Column(name = "date")
@@ -50,6 +49,9 @@ public class Message extends PanacheEntityBase {
     private String label;
 
     @Column(name = "message_index")
-    private String message_index;
+    private double message_index;
+
+    @Transient
+    private List<String> jsonText;
 
 }
