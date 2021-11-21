@@ -18,11 +18,8 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -74,12 +71,7 @@ public class MessageResource {
             weightSum += (1 /
                     (1 +
                     0.5 *
-                    (double) (Period.between(LocalDate.now(),
-                            message.getDate()
-                                    .toInstant()
-                                    .atZone(ZoneId.systemDefault())
-                                    .toLocalDate())
-                            .get(ChronoUnit.SECONDS) / 60)));
+                    (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
             sum += m.getMessage_index() * (1 / (1 + 0.5 * (System.currentTimeMillis() - message.getDate().getTime())));
         }
         message.setScore(sum / weightSum);
