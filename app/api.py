@@ -19,6 +19,8 @@ from fitbert import FitBert
 
 bad_words = pd.read_csv(os.environ['BAD_WORDS_PATH'], names=['words'])
 bad_words = bad_words['words'].to_list()
+regexp = (r'\b(%s)\b' % '|'.join(bad_words))
+r = re.compile(regexp, re.IGNORECASE)
 
 fb = FitBert(model_name='bert-base-cased', disable_gpu=True)
 logger.info('Bert model loaded!')
@@ -54,10 +56,6 @@ async def analyze_text(message: str):
 
 
 def correct_message(message: str):
-    regexp = (r'\b(%s)\b' % '|'.join(bad_words))
-
-    r = re.compile(regexp, re.IGNORECASE)
-
     mask_token = fb.mask_token
     span_dict = {}
     for match in re.finditer(r, message):
@@ -102,9 +100,13 @@ def proceed_text(message: str, response: Response):
     sentiment_score = result['sentiment']['document']['score']
     emotions_scores = result['emotion']['document']['emotion']
 
-    logger.info(sentiment_score)
-    logger.info(emotions_scores)
+    n_badwords = len(re.findall(r, message))
+    badwords_index = np.exp(-2*n_badwords)
 
+    badwords_weight = 1
+    if len(message.split(' ')) < 4:
+        badwords_weight = 5
+        
     sentiment_index = 1.0
     if sentiment_score < 0:
         sentiment_index = round(0.5*(1 + sentiment_score)) # weight = 5
@@ -126,8 +128,16 @@ def proceed_text(message: str, response: Response):
 
     weights = [1.5, 2, 2]
 
+
     message_index = round(np.average(indexes, weights=weights), 2)
-    # message_index = round(np.quantile(indexes, ), 2)
+
+    logger.info(f'IBM index: {message_index}')
+    logger.info(f'Bad words index: {badwords_index}')
+
+    message_index += badwords_index*badwords_weight
+    message_index /= 1 + badwords_weight
+
+    logger.info(f'Total index: {message_index}\n')
 
     label = 'positive'
     if message_index < 0.4:
