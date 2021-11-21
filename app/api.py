@@ -1,20 +1,17 @@
 import asyncio
 import json
 import os
-import time
 import re
 import string
 import traceback
 
 import aiohttp
-from aiohttp import BasicAuth
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, Response, HTTPException
+from aiohttp import BasicAuth
+from fastapi import FastAPI, HTTPException, Response
 
 from app.logging import get_logger
-
-import random
 
 logger = get_logger(__name__)
 
@@ -25,41 +22,6 @@ bad_words = bad_words['words'].to_list()
 
 fb = FitBert(model_name='bert-base-cased', disable_gpu=True)
 logger.info('Bert model loaded!')
-
-# def correct_message(message: str):
-#     regexp = (r'\b(%s)\b' % '|'.join(bad_words))
-
-#     r = re.compile(regexp, re.IGNORECASE)
-
-#     mask_token = fb.mask_token
-#     span_dict = {}
-#     for match in re.finditer(r, message):
-#         old_word = match.group(0)
-#         s1, s2 = match.span()
-#         masked_message = message[:s1] + mask_token + message[s2:]
-        
-#         logger.info(old_word)
-#         guess_list = set(fb.guess(masked_message, n=20))
-#         remove_set = set(bad_words + list(string.punctuation))
-#         guess_list = guess_list.difference(remove_set)
-#         guess_list = list(guess_list)
-        
-#         new_word = guess_list[0]
-#         logger.info(new_word)
-#         span_dict[(s1, s2)] = (old_word, new_word)
-        
-#     span_dict = sorted(span_dict.items(), key=lambda item: item[0])
-
-#     new_message = message
-#     for s in span_dict:
-#         old_word, new_word = s[1]
-#         new_message = new_message.replace(old_word, new_word)
-        
-#     new_message = new_message.replace('##', '')
-
-#     return new_message
-
-# logger.info(correct_message('I fuck your mama'))
 
 app = FastAPI()
 
@@ -104,8 +66,7 @@ def correct_message(message: str):
         masked_message = message[:s1] + mask_token + message[s2:]
         
         logger.info(old_word)
-        #guess_list = set(fb.guess(masked_message, n=20))
-        guess_list = set(['1', '2', '3', '4'])
+        guess_list = set(fb.guess(masked_message, n=20))
         remove_set = set(bad_words + list(string.punctuation))
         guess_list = guess_list.difference(remove_set)
         guess_list = list(guess_list)
@@ -127,11 +88,11 @@ def correct_message(message: str):
 
 
 @app.get("/proceed_text/")
-async def proceed_text(message: str, response: Response):
+def proceed_text(message: str, response: Response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     
     try:
-        result = await analyze_text(message)
+        result = asyncio.run(analyze_text(message))
     except Exception as e:
         error_info = traceback.format_exc()
         logger.info(f'Error: {error_info}')
@@ -172,7 +133,7 @@ async def proceed_text(message: str, response: Response):
     if message_index < 0.4:
         label = 'negative'
         message = correct_message(message)
-        #message = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        # message = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 
     return {
         'new_message': message,
