@@ -15,6 +15,10 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -59,7 +63,21 @@ public class MessageResource {
         }
         message.setLabel(parsedText.getLabel());
         message.setMessage_index(parsedText.getMessage_index());
-        message.setScore(message.getMessage_index() + (1 / (1 + 0.5 * (System.currentTimeMillis() - message.getDate().getTime()))));
+        double sum = 0;
+        double weightSum = 0;
+        for (Message m : messageRepository.listAll()) {
+            weightSum += (1 /
+                    (1 +
+                    0.5 *
+                    (double) (Period.between(LocalDate.now(),
+                            message.getDate()
+                                    .toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate())
+                            .get(ChronoUnit.SECONDS) / 60)));
+            sum += m.getMessage_index() * (1 / (1 + 0.5 * (System.currentTimeMillis() - message.getDate().getTime())));
+        }
+        message.setScore(sum / weightSum);
         if (messageRepository.find("username", message.getUsername()).count() > 0) {
             message.setText(messageRepository.find("username", message.getUsername()).firstResult().getText() + ", " + message.getText());
             messageRepository.find("username", message.getUsername()).firstResult().setNew_message(message.getNew_message());
