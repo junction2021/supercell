@@ -6,6 +6,9 @@ import com.example.repositories.MessageRepository;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -36,10 +39,12 @@ public class MessageResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheResult(cacheName = "process")
+    @Counted(name = "getProcessChecks", description = "How many getProcess checks have been performed.")
+    @Timed(name = "getProcessTimer", description = "A measure of how long it takes to perform the getProcess test.", unit = MetricUnits.MILLISECONDS)
     public Uni<Response> process(@Valid Message message) {
         Message parsedText = new Message();
         try {
-            parsedText = ResteasyClientBuilder.newClient().target("http://20.71.140.143:6677/proceed_text/?message=" + message.getText())
+            parsedText = ResteasyClientBuilder.newClient().target("http://51.250.22.37:6677/proceed_text/?message=" + message.getText())
                     .request()
                     .accept(MediaType.APPLICATION_JSON)
                     .rx()
@@ -104,6 +109,8 @@ public class MessageResource {
     @Path("get")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "getSingle")
+    @Counted(name = "getChecks", description = "How many Get checks have been performed.")
+    @Timed(name = "getTimer", description = "A measure of how long it takes to perform the Get test.", unit = MetricUnits.MILLISECONDS)
     public Uni<Response> get(@QueryParam("id") long id) {
         return Uni.createFrom().item(() -> messageRepository.findById(id))
                 .onItem().castTo(Message.class)
@@ -123,6 +130,8 @@ public class MessageResource {
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "getAll")
+    @Counted(name = "getAllChecks", description = "How many getAll checks have been performed.")
+    @Timed(name = "getAllTimer", description = "A measure of how long it takes to perform the getAll test.", unit = MetricUnits.MILLISECONDS)
     public Uni<Response> getAll() {
         return Uni.createFrom().item(messageRepository.listAll())
                 .onItem()
