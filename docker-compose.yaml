@@ -1,0 +1,36 @@
+version: "3.6"
+
+services:
+
+  traefik:
+    image: "traefik:v2.5"
+    container_name: "traefik"
+    restart: always
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+      - 8080:8080
+
+  jupyter:
+    restart: always
+    env_file:
+      - .env
+    build:
+      context: ./
+    image: jupyter:latest
+    ports: 
+      - 7777:7777
+    volumes:
+      - ./:/home/research
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jupyter.rule=Host(`junction2021.localhost`)"
+    depends_on: 
+      - "traefik"
+    
