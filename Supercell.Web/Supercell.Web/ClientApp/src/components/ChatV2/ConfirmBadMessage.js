@@ -20,10 +20,10 @@ const ConfirmBadMessage = ({ betterMessage, confirm, dismiss, isConfirm }) => {
 
     return (
         <Alert style={{ cursor: 'pointer' }} color={'warning'} className="ml-4 mr-4" onClick={() => isConfirm(true)}>
-            <h4 className="alert-heading">Don't lose your Karma!</h4>
+            <h4 className="alert-heading">Don't lose your chat Karma!</h4>
             <hr />
-            <p>Stop being so toxic, here write this instead:</p>
-            <p className="mb-0">{betterMessage}</p>
+            <p className="mb-1">Stop being so toxic, click here to write this instead:</p>
+            <h5 className="">{betterMessage}</h5>
             <Progress style={{ height: '3px' }} animated value={countDown} color="warning" />
         </Alert>
     );

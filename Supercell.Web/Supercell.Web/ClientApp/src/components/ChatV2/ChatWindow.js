@@ -26,7 +26,7 @@ const ChatWindow = (props) => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [props.chat, props.badMessages]);
+    }, [props.chat, props.badMessage]);
 
     return (
         <div className="ps-container ps-theme-default ps-active-y chat-frame">

@@ -48,8 +48,9 @@ const Game = (props) => {
                 .then(result => {
                     setConnected(true);
 
-                    connection.on('ReceiveMessage', (user, color, message, karma) => {
-                        if (user === props.user.name) {
+                    connection.on('ReceiveMessage', (user, color, backgroundColor, message, karma) => {
+                        console.log("recevie karma");
+                        if (karma && user === props.user.name) {
                             setKarma(karma);                            
                         }
                     });
@@ -69,7 +70,7 @@ const Game = (props) => {
                 <div className="col-md-12 pt-3">
                     <div className="jumbotron jumbotron-fluid text-center">
                         <h1 className="text-center">Game in progress...</h1>
-                        <h4>Your current Karma: <span 
+                        <h4>Your current chat Karma: <span 
                             className={karma >= 60 ? 'text-success' : karma <= 30 ? 'text-danger' : 'text-secondary' }
                             >{karma}</span></h4>
                         {/* <Countdown
@@ -82,7 +83,7 @@ const Game = (props) => {
                     </div>
                 </div>
                 <div className="col-md-12 fixed-bottom">
-                    <Chat loggedUser={props.user} connection={connection} />
+                    <Chat setKarma={setKarma} loggedUser={props.user} connection={connection} />
                 </div>
             </div>
         </div>

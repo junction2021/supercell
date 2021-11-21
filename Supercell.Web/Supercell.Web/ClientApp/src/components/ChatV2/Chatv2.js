@@ -5,7 +5,7 @@ import ChatInput from './ChatInput';
 
 import { v4 as uuidv4 } from 'uuid';
 
-const Chat = ({ connection, loggedUser }) => {
+const Chat = ({ connection, loggedUser, setKarma }) => {
     const [chat, setChat] = useState([]);
     const latestChat = useRef(null);
     latestChat.current = chat;
@@ -27,22 +27,23 @@ const Chat = ({ connection, loggedUser }) => {
     }, []);
 
     useEffect(() => {
-        connection.on('ReceiveMessage', (user, color, message) => {
+        connection.on('ReceiveMessage', (user, color, backgroundColor, message) => {
+            console.log('ReceiveMessage');
             const updatedChat = [...latestChat.current];
-            updatedChat.push({ user, color, message });
+            updatedChat.push({ user, color: {color, backgroundColor}, message });
 
             setChat(updatedChat);
-            console.log('ReceiveMessage');
         });
 
-        connection.on('ReceiveCorrection', (betterMessage, originalMessage) => {
+        connection.on('ReceiveCorrection', (betterMessage, originalMessage, karma) => {
             // const updatedMsgs = [...latestBadMessages.current];
             // updatedMsgs.push({ betterMessage, originalMessage, id: uuidv4() });
 
             // setBadMessages(updatedMsgs);
             // console.log('ReceiveCorrection');
 
-            setBadMessage({ betterMessage, originalMessage, id: uuidv4() });
+            setBadMessage(null);
+            setBadMessage({ betterMessage, originalMessage, karma, id: uuidv4() });
         });
     }, [connection]);
 
@@ -51,12 +52,15 @@ const Chat = ({ connection, loggedUser }) => {
             await forceSendMessage(dm.betterMessage);
         } else {
             // -- Karma
+            setKarma(dm.karma);
             await forceSendMessage(dm.originalMessage);            
         }
 
-        const updatedMsgs = [...latestBadMessages.current];
+        // const updatedMsgs = [...latestBadMessages.current];
 
-        setBadMessages(updatedMsgs.filter(i => i.id !== dm.id));
+        // setBadMessages(updatedMsgs.filter(i => i.id !== dm.id));
+        
+        setBadMessage(null);
     };
 
     const sendMessage = async (message) => {
@@ -76,6 +80,7 @@ const Chat = ({ connection, loggedUser }) => {
         <div className="card card-bordered">
             <ChatWindow
                 chat={chat}
+                badMessage={badMessage}
                 badMessages={badMessages}
                 isConfirm={isConfirm}
                 updateBadMessages={setBadMessages}

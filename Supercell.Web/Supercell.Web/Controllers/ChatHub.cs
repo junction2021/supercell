@@ -21,7 +21,7 @@ namespace Supercell.Web.Controllers
 
         public class ChatHub : Hub
         {
-            public static string BASE_URL = "http://56e5-85-249-30-61.ngrok.io/";
+            public static string BASE_URL = "http://51.250.22.37:8080/";
 
             static readonly HttpClient client = new HttpClient();
 
@@ -29,7 +29,7 @@ namespace Supercell.Web.Controllers
 
             public async Task ForceSendMessage(string user, string color, string backgroundColor, string message)
             {
-                await Clients.All.SendAsync("ReceiveMessage", user, color, message);
+                await Clients.All.SendAsync("ReceiveMessage", user, color, backgroundColor, message);
                 await SaveMessage(user, color, backgroundColor, message);
             }
 
@@ -59,7 +59,7 @@ namespace Supercell.Web.Controllers
                 }
                 else
                 {
-                    await Clients.All.SendAsync("ReceiveMessage", user, color, message, a.Karma);
+                    await Clients.All.SendAsync("ReceiveMessage", user, color, backgroundColor, message, a.Karma);
 
                     await SaveMessage(user, color, backgroundColor, message);
                 }
