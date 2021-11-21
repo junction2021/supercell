@@ -19,7 +19,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -67,14 +66,15 @@ public class MessageResource {
         message.setMessage_index(parsedText.getMessage_index());
         double sum = 0;
         double weightSum = 0;
-        for (Message m : messageRepository.listAll()) {
-            weightSum += (1 /
-                    (1 +
-                    0.5 *
-                    (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
-            sum += m.getMessage_index() * (1 / (1 + 0.5 * (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
+        for (Message m : messageRepository.listAll().stream().limit(20).collect(Collectors.toList())) {
+//            weightSum += (1 /
+//                    (1 +
+//                    0.5 *
+//                    (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
+//            sum += m.getMessage_index() * (1 / (1 + 0.5 * (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
+            sum += m.getMessage_index();
         }
-        message.setScore(sum / weightSum);
+        message.setScore(sum / 20.0);
         if (messageRepository.find("username", message.getUsername()).count() > 0) {
             message.setText(messageRepository.find("username", message.getUsername()).firstResult().getText() + ", " + message.getText());
             messageRepository.find("username", message.getUsername()).firstResult().setNew_message(message.getNew_message());
