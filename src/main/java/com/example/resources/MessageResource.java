@@ -5,7 +5,6 @@ import com.example.models.SimpleMessage;
 import com.example.repositories.MessageRepository;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.logging.Log;
-import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -20,6 +19,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -64,28 +64,9 @@ public class MessageResource {
             message.setNew_message("");
         }
         message.setLabel(parsedText.getLabel());
-        message.setMessage_index(parsedText.getMessage_index());
-        double sum = 0;
-        double weightSum = 0;
-        int cnt = 0;
-        if (messageRepository.listAll().size() > 0 ) {
-            for (Message m : messageRepository.listAll(Sort.descending("id"))
-                    .stream()
-                    .limit(20)
-                    .collect(Collectors.toList())) {
-//            weightSum += (1 /
-//                    (1 +
-//                    0.5 *
-//                    (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
-//            sum += m.getMessage_index() * (1 / (1 + 0.5 * (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
-                sum += m.getMessage_index();
-                cnt++;
-            }
-        } else {
-            sum += message.getMessage_index();
-            cnt = 1;
-        }
-        message.setScore(sum / cnt);
+        message.setMessage_index((parsedText.getMessage_index() + message.getMessage_index()) * (1 / (1 + 0.5 * (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60))));
+
+        message.setScore(message.getMessage_index() / (message.getMessage_index() * message.getJsonText().size()));
         if (messageRepository.find("username", message.getUsername()).count() > 0) {
             message.setText(messageRepository.find("username", message.getUsername()).firstResult().getText() + ", " + message.getText());
             messageRepository.find("username", message.getUsername()).firstResult().setNew_message(message.getNew_message());
