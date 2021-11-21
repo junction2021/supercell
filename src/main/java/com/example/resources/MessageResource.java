@@ -66,7 +66,7 @@ public class MessageResource {
         message.setLabel(parsedText.getLabel());
         message.setMessage_index((parsedText.getMessage_index() + message.getMessage_index()) * (1 / (1 + 0.5 * (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60))));
 
-        message.setScore(message.getMessage_index() / (message.getMessage_index() * message.getJsonText().size()));
+        message.setScore(message.getMessage_index() / messageRepository.listAll().size());
         if (messageRepository.find("username", message.getUsername()).count() > 0) {
             message.setText(messageRepository.find("username", message.getUsername()).firstResult().getText() + ", " + message.getText());
             messageRepository.find("username", message.getUsername()).firstResult().setNew_message(message.getNew_message());
