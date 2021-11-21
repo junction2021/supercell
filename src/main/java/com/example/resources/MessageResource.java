@@ -66,15 +66,25 @@ public class MessageResource {
         message.setMessage_index(parsedText.getMessage_index());
         double sum = 0;
         double weightSum = 0;
-        for (Message m : messageRepository.listAll().stream().limit(20).collect(Collectors.toList())) {
+        int cnt = 0;
+        if (messageRepository.listAll().size() > 0 ) {
+            for (Message m : messageRepository.listAll()
+                    .stream()
+                    .limit(20)
+                    .collect(Collectors.toList())) {
 //            weightSum += (1 /
 //                    (1 +
 //                    0.5 *
 //                    (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
 //            sum += m.getMessage_index() * (1 / (1 + 0.5 * (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
-            sum += m.getMessage_index();
+                sum += m.getMessage_index();
+                cnt++;
+            }
+        } else {
+            sum += message.getMessage_index();
+            cnt = 1;
         }
-        message.setScore(sum / 20.0);
+        message.setScore(sum / cnt);
         if (messageRepository.find("username", message.getUsername()).count() > 0) {
             message.setText(messageRepository.find("username", message.getUsername()).firstResult().getText() + ", " + message.getText());
             messageRepository.find("username", message.getUsername()).firstResult().setNew_message(message.getNew_message());
