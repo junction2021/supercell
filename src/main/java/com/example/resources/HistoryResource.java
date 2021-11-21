@@ -2,6 +2,7 @@ package com.example.resources;
 
 import com.example.models.History;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -10,6 +11,7 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.stream.Collectors;
 
 @Path("/")
 @ApplicationScoped
@@ -20,18 +22,28 @@ public class HistoryResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheResult(cacheName = "historyPost")
-//    @Blocking
     public Uni<Response> history(@Valid History history) {
         history.persist();
-        return Uni.createFrom().item(Response.ok(history).build());
+        return Uni.createFrom()
+                .item(Response
+                        .ok(history)
+                        .build());
     }
 
     @GET
     @Path("history")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "historyGet")
-//    @Blocking
     public Uni<Response> historyGet() {
-        return Uni.createFrom().item(Response.ok(History.listAll()).build());
+        return Uni.createFrom()
+                .item(Response
+                        .ok(History
+                                .listAll(Sort
+                                        .descending("id"))
+                                .stream()
+                                .parallel()
+                                .limit(20)
+                                .collect(Collectors.toList()))
+                        .build());
     }
 }

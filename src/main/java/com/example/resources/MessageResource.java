@@ -32,11 +32,10 @@ public class MessageResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @CacheResult(cacheName = "process")
-//    @Blocking
     public Uni<Response> process(@Valid Message message) {
         Message parsedText = new Message();
         try {
-            parsedText = ResteasyClientBuilder.newClient().target("https://9571-37-235-56-152.ngrok.io/proceed_text/?message=" + message.getText())
+            parsedText = ResteasyClientBuilder.newClient().target("http://20.71.140.143:6677/proceed_text/?message=" + message.getText())
                     .request()
                     .accept(MediaType.APPLICATION_JSON)
                     .rx()
@@ -44,7 +43,9 @@ public class MessageResource {
                     .toCompletableFuture()
                     .exceptionally(x -> {
                         Log.error("Something went wrong during the request: " + x.getMessage());
-                        return Response.status(Response.Status.BAD_REQUEST).entity("External service is unavailable. Please try again later").build();
+                        return Response.status(Response.Status.BAD_REQUEST)
+                                .entity("External service is unavailable. Please try again later")
+                                .build();
                     })
                     .get()
                     .readEntity(Message.class);
@@ -85,7 +86,6 @@ public class MessageResource {
     @Path("get")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "getSingle")
-//    @Blocking
     public Uni<Response> get(@QueryParam("id") long id) {
         return Uni.createFrom().item(() -> messageRepository.findById(id))
                 .onItem().castTo(Message.class)
@@ -105,7 +105,6 @@ public class MessageResource {
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "getAll")
-//    @Blocking
     public Uni<Response> getAll() {
         return Uni.createFrom().item(messageRepository.listAll())
                 .onItem()

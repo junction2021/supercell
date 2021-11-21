@@ -37,7 +37,6 @@ public class Message {
 
     @NotEmpty(message = "Text can't be empty")
     @Column(name = "text", length = 1000)
-//    @Convert(converter = StringListConverter.class)
     private String text;
 
     @Basic(fetch = FetchType.EAGER)
