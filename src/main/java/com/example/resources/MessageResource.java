@@ -72,7 +72,7 @@ public class MessageResource {
                     (1 +
                     0.5 *
                     (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
-            sum += m.getMessage_index() * (1 / (1 + 0.5 * (System.currentTimeMillis() - message.getDate().getTime())));
+            sum += m.getMessage_index() * (1 / (1 + 0.5 * (double) ((new Date().getTime() - message.getDate().getTime()) / 1000 / 60)));
         }
         message.setScore(sum / weightSum);
         if (messageRepository.find("username", message.getUsername()).count() > 0) {
