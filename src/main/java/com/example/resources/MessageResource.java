@@ -5,6 +5,7 @@ import com.example.models.SimpleMessage;
 import com.example.repositories.MessageRepository;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.logging.Log;
+import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -68,7 +69,7 @@ public class MessageResource {
         double weightSum = 0;
         int cnt = 0;
         if (messageRepository.listAll().size() > 0 ) {
-            for (Message m : messageRepository.listAll()
+            for (Message m : messageRepository.listAll(Sort.descending("id"))
                     .stream()
                     .limit(20)
                     .collect(Collectors.toList())) {
